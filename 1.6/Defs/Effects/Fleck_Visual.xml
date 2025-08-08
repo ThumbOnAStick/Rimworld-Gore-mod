@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <FleckDef ParentName="FleckBase_RandomGraphic">
+    <defName>FlyingGibs</defName>
+    <fleckSystemClass>FleckSystemThrown</fleckSystemClass>
+    <randomGraphics>
+      <li>
+        <texPath>Things/Gibs/Gib1</texPath>
+        <shaderType>Mote</shaderType>
+        <renderInstanced>false</renderInstanced>
+        <graphicClass>Graphic_Fleck</graphicClass>
+      </li> 
+      <li>
+        <texPath>Things/Gibs/Gib2</texPath>
+        <shaderType>Mote</shaderType>
+        <renderInstanced>false</renderInstanced>
+        <graphicClass>Graphic_Fleck</graphicClass>
+      </li>
+      <li>
+        <texPath>Things/Gibs/Gib3</texPath>
+        <shaderType>Mote</shaderType>
+        <renderInstanced>false</renderInstanced>
+        <graphicClass>Graphic_Fleck</graphicClass>
+      </li>
+      <li>
+        <texPath>Things/Gibs/Gib4</texPath>
+        <shaderType>Mote</shaderType>
+        <renderInstanced>false</renderInstanced>
+        <graphicClass>Graphic_Fleck</graphicClass>
+      </li>
+    </randomGraphics>
+    <growthRate>0</growthRate>
+    <altitudeLayer>Filth</altitudeLayer>
+    <fadeInTime>0.04</fadeInTime>
+    <solidTime>0.03</solidTime>
+    <fadeOutTime>1</fadeOutTime>
+    <altitudeLayer>PawnState</altitudeLayer>
+  </FleckDef>
+</Defs>

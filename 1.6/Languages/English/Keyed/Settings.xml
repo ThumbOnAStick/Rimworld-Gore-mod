@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<Gore>Gore</Gore>
+	<AllFilth>All Filth</AllFilth>	
+	<GoreSpawnsAsFilth>Gore spawns as filth</GoreSpawnsAsFilth>
+	<IsForbidden>Is Forbidden</IsForbidden>
+	<ForbidGoreAfterSpawning>Forbid gore after spawning</ForbidGoreAfterSpawning>
+	<LimbDropChance>Limb Drop Chance:{0}%</LimbDropChance>
+	<TorsoExplosionChance>Torso Explosion Chance:{0}%</TorsoExplosionChance>
+</LanguageData>

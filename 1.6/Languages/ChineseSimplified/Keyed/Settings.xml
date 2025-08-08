@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<Gore>尸块</Gore>
+	<AllFilth>作为污渍生成</AllFilth>	
+	<GoreSpawnsAsFilth>尸块作为污渍生成</GoreSpawnsAsFilth>
+	<IsForbidden>禁用尸块</IsForbidden>
+	<ForbidGoreAfterSpawning>生成尸块后禁用</ForbidGoreAfterSpawning>
+	<LimbDropChance>断肢生成几率：{0}%</LimbDropChance>
+	<TorsoExplosionChance>躯干爆破几率：{0}%</TorsoExplosionChance>
+</LanguageData>
