@@ -1,0 +1,5 @@
+F:\Steam\steamapps\common\RimWorld\Mods\Gore mod\Source\obj\Debug\GoreUponDismemberment.csproj.AssemblyReference.cache
+F:\Steam\steamapps\common\RimWorld\Mods\Gore mod\Source\obj\Debug\GoreUponDismemberment.csproj.CoreCompileInputs.cache
+F:\Steam\steamapps\common\RimWorld\1.6\Assemblies\GoreUponDismemberment.dll
+F:\Steam\steamapps\common\RimWorld\Mods\Gore mod\Source\obj\Debug\GoreUponDismemberment.dll
+F:\Steam\steamapps\common\RimWorld\Mods\Gore mod\1.6\Assemblies\GoreUponDismemberment.dll

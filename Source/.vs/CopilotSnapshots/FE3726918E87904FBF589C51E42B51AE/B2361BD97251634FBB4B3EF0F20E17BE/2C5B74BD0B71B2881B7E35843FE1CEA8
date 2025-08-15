@@ -1,0 +1,75 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using HarmonyLib;
+using RimWorld;
+using Verse;
+
+namespace GoreUponDismemberment.HarmonyPatches
+{
+    // Token: 0x02000013 RID: 19
+    [HarmonyPatch(typeof(Pawn), "MakeCorpse", new Type[]
+    {
+        typeof(Building_Grave),
+        typeof(Building_Bed)
+    })]
+    public class MakeCorpsePatch
+    {
+        // Token: 0x0600003C RID: 60 RVA: 0x000037EC File Offset: 0x000019EC
+        private static void Postfix(Pawn __instance, Corpse __result)
+        {
+            bool flag = __instance == null;
+            if (!flag)
+            {
+                CompDeathRecorder compDeathRecorder = __instance.TryGetComp<CompDeathRecorder>();
+                bool flag2 = compDeathRecorder == null;
+                if (!flag2)
+                {
+                    bool flag3 = __instance.health == null;
+                    if (!flag3)
+                    {
+                        bool flag4 = __instance.health.hediffSet == null;
+                        if (!flag4)
+                        {
+                            List<Hediff> hediffs = __instance.health.hediffSet.hediffs;
+                            bool flag5 = hediffs == null || hediffs.Count < 1;
+                            if (!flag5)
+                            {
+                                bool flag6 = !hediffs.Any((Hediff x) => x.Part != null);
+                                if (!flag6)
+                                {
+                                    IEnumerable<Hediff> enumerable = hediffs.Where((Hediff x) => x.Part != null);
+                                    bool flag7 = enumerable.Count<Hediff>() < 1;
+                                    if (!flag7)
+                                    {
+                                        List<Hediff> list = enumerable.OrderBy((Hediff x) => x.tickAdded).ToList<Hediff>();
+                                        Hediff hediff = list.Last<Hediff>();
+                                        bool flag8 = hediff.def == null || enumerable.Count<Hediff>() < 2;
+                                        if (!flag8)
+                                        {
+                                            bool flag9 = hediff.def == HediffDefOf.MissingBodyPart;
+                                            if (flag9)
+                                            {
+                                                hediff = list[list.Count<Hediff>() - 2];
+                                            }
+                                            bool flag10 = hediff.def.defName == "Burn";
+                                            if (flag10)
+                                            {
+                                                compDeathRecorder.cause = CompDeathRecorder.DeathCause.Flame;
+                                                bool flag11 = __result.HasComp<CompRottable>();
+                                                if (flag11)
+                                                {
+                                                    __result.GetComp<CompRottable>().RotImmediately(RotStage.Dessicated);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

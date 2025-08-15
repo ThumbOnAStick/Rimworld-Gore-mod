@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using GoreSettings;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -14,11 +13,11 @@ namespace GoreUponDismemberment
 {
     public class GoreUponDismembermentMod : Mod
     {
+        public static GoreSettings settings;
+
         public GoreUponDismembermentMod(ModContentPack content) : base(content)
         {
-            settings = base.GetSettings<Settings>();
-            harmonyInstance = new Harmony("DeathGore");
-            harmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
+            settings = base.GetSettings<GoreSettings>();
         }
 
         public override void DoSettingsWindowContents(Rect inRect)
@@ -39,7 +38,5 @@ namespace GoreUponDismemberment
             return "Gore".Translate();
         }
 
-        public static Settings settings;
-        public static Harmony harmonyInstance;
     }
 }
