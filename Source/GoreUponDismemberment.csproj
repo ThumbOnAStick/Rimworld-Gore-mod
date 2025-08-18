@@ -51,12 +51,16 @@
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.ClothModule">
+      <HintPath>..\..\..\RimWorldWin64_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApperalTearingSystem\Graphic_TornWrapper .cs" />
     <Compile Include="DeathRecoder.cs" />
     <Compile Include="GoreDefOf.cs" />
     <Compile Include="GUDUtil_Limbs.cs" />
@@ -66,6 +70,7 @@
     <Compile Include="GoreUponDismembermentMod.cs" />
     <Compile Include="GUDUtil_HeadGore.cs" />
     <Compile Include="GUDUtil_TorsoGore.cs" />
+    <Compile Include="HarmonyPatches\ApperalPatch.cs" />
     <Compile Include="HarmonyPatches\BodyRenderPatch.cs" />
     <Compile Include="HarmonyPatches\GoreHarmony.cs" />
     <Compile Include="HarmonyPatches\HeadRenderPatch.cs" />

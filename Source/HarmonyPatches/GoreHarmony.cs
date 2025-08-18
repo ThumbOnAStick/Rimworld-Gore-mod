@@ -29,6 +29,7 @@ namespace GoreUponDismemberment.HarmonyPatches
                 TorsoDestroyedPatch.PatchHarmony();
                 MissingPartPatch.PatchHarmony();
                 PawnKillPatch.PatchHarmony();
+                ApperalPatch.PatchHarmony();
                 // Compatiblity with Facial animation -- Not implemented
                 GoreHarmony.harmony.PatchAll();
             } catch (Exception e)
