@@ -141,7 +141,8 @@ namespace GoreUponDismemberment
         protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             this.frame++;
-            facing = Rot4.FromAngleFlat(360 * Mathf.Sin(frame / 10));
+            float period = 10;
+            facing = Rot4.FromAngleFlat(360 * ((frame % period) / period));
             // Head
             DrawHead(drawLoc);
 
