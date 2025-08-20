@@ -34,7 +34,7 @@ namespace GoreUponDismemberment.HarmonyPatches
                         bool flag4 = compDeathRecorder == null;
                         if (!flag4)
                         {
-                            Graphic graphic = GUDUtil.GoredHeadGraphic(pawn, compDeathRecorder.cause, __instance.ShaderFor(pawn));
+                            Graphic graphic = GUDUtil.GoredHeadGraphic(pawn, compDeathRecorder.cause, __instance.ShaderFor(pawn), __instance.ColorFor(pawn));
                             bool flag5 = graphic != null;
                             if (flag5)
                             {

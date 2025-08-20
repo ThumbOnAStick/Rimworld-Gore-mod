@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+    <ThingDef>
+        <defName>FlyingHead</defName>
+        <label>flying head</label>
+        <category>Projectile</category>
+        <thingClass>GoreUponDismemberment.Projectile_FlyingHead</thingClass>
+        <tickerType>Normal</tickerType>
+        <altitudeLayer>Projectile</altitudeLayer>
+        <useHitPoints>False</useHitPoints>
+        <neverMultiSelect>True</neverMultiSelect>
+        <graphicData>
+            <shaderType>Transparent</shaderType>
+            <texPath>Things/Projectile/Bullet_Small</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <drawSize>(1.5,1.5)</drawSize>
+        </graphicData>
+        <projectile>
+            <useGraphicClass>False</useGraphicClass>
+            <speed>8</speed>
+        </projectile>
+    </ThingDef>
+</Defs>

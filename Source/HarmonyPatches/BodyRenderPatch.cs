@@ -1,4 +1,4 @@
-﻿using GoreUponDismemberment.ApperalTearingSystem;
+﻿using GoreUponDismemberment.SpriteSplitingSystem;
 using HarmonyLib;
 using RimWorld;
 using System;
@@ -24,7 +24,14 @@ namespace GoreUponDismemberment.HarmonyPatches
             MethodInfo original = AccessTools.Method(typeof(PawnRenderNode_Body), "GraphicFor");
             HarmonyMethod postfix = new HarmonyMethod(typeof(BodyRenderPatch).GetMethod("Postfix"));
             GoreHarmony.harmony.Patch(original, null, postfix);
+
+            MethodInfo original1 = AccessTools.Method(typeof(PawnRenderNode_AnimalPart), "GraphicFor");
+            HarmonyMethod postfix1 = new HarmonyMethod(typeof(BodyRenderPatch).GetMethod("Postfix1"));
+            GoreHarmony.harmony.Patch(original1, null, postfix1);
+ 
         }
+
+
 
         public static void Postfix(object[] __args, ref Graphic __result, PawnRenderNode_Body __instance)
         {
@@ -47,33 +54,33 @@ namespace GoreUponDismemberment.HarmonyPatches
 
                     //Check torso hp
                     BodyPartRecord torsoPart = pawn.health.hediffSet.GetNotMissingParts().FirstOrDefault(part => part.def == BodyPartDefOf.Torso);
-                    if (torsoPart != null)
+                    if (torsoPart != null && DeathRecorderHelper.IsPawnTorsoDestroyed(pawn)) // When pawn has death recorder
                     {
-                        // Calculate current health by subtracting damage from max health
-                        float torsoMaxHP = torsoPart.def.hitPoints;
-                        float totalDamage = 0f;
-
-                        // Sum up all damage hediffs affecting the torso
-                        foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
-                        {
-                            if (hediff.Part == torsoPart && hediff is Hediff_Injury injury)
-                            {
-                                totalDamage += injury.Severity;
-                            }
-                        }
-
-                        float torsoCurrentHP = Mathf.Max(0f, torsoMaxHP - totalDamage);
-                        float torsoHPPercentage = torsoCurrentHP / torsoMaxHP;
-
-                        if (torsoHPPercentage < 0.01f)
-                        {
-                            // Split torso in half
-                            __result = new Graphic_SplitWrapper(__result, pawn);
-                        }
+                        __result = new Graphic_SplitWrapper(__result, pawn, false, true);
+                        return;
                     }
+
+
+
                 }
             }
         }
 
+
+        public static void Postfix1(object[] __args, ref Graphic __result)
+        {
+            if (__args[0] != null)
+            {
+                Pawn pawn = __args[0] as Pawn;
+                if (pawn != null && pawn.Dead)
+                {
+                    BodyPartRecord torsoPart = pawn.health.hediffSet.GetBodyPartRecord(DefDatabase<BodyPartDef>.GetNamed("Body")); 
+                    if (torsoPart != null && GUDUtil.IsBodyPartDestroyed(torsoPart, pawn)) // When pawn is not human
+                    {
+                        __result = new Graphic_SplitWrapper(__result, pawn, true, true);
+                    }
+                }
+            }
+        }
     }
 }

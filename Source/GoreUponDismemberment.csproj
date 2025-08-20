@@ -51,25 +51,23 @@
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.ClothModule">
-      <HintPath>..\..\..\RimWorldWin64_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApperalTearingSystem\Graphic_TornWrapper .cs" />
-    <Compile Include="DeathRecoder.cs" />
+    <Compile Include="SpriteSplitingSystem\Graphic_SplitWrapper.cs" />
+    <Compile Include="Components\DeathRecoder.cs" />
+    <Compile Include="Utils\DeathRecorderHelper.cs" />
     <Compile Include="GoreDefOf.cs" />
-    <Compile Include="GUDUtil_Limbs.cs" />
-    <Compile Include="GUDUtil_Xeno.cs" />
-    <Compile Include="GUDUtil_Graphics.cs" />
+    <Compile Include="Utils\GUDUtil_Limbs.cs" />
+    <Compile Include="Utils\GUDUtil_Xeno.cs" />
+    <Compile Include="Utils\GUDUtil_Graphics.cs" />
     <Compile Include="GoreSettings.cs" />
     <Compile Include="GoreUponDismembermentMod.cs" />
-    <Compile Include="GUDUtil_HeadGore.cs" />
-    <Compile Include="GUDUtil_TorsoGore.cs" />
+    <Compile Include="Utils\GUDUtil_HeadGore.cs" />
+    <Compile Include="Utils\GUDUtil_TorsoGore.cs" />
     <Compile Include="HarmonyPatches\ApperalPatch.cs" />
     <Compile Include="HarmonyPatches\BodyRenderPatch.cs" />
     <Compile Include="HarmonyPatches\GoreHarmony.cs" />

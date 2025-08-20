@@ -29,40 +29,38 @@ namespace GoreUponDismemberment
 
         private static readonly string headShotPathFemale = "Things/Heads/Shot/Female_shot";
 
-        public static Graphic FlyingHeadGraphic(Gender gender, Color skinColor, CompDeathRecorder.DeathCause cause, Shader shader, Pawn pawn = null)
+
+        private static Graphic_Multi GetDefaultHeadGraphic(HeadTypeDef headType, Color color)
         {
-            bool flag = pawn != null && pawn.Drawer.renderer.renderTree.HeadGraphic != null;
-            Graphic graphic;
-            if (flag)
-            {
-                graphic = pawn.story.headType.GetGraphic(pawn, pawn.story.SkinColor);
-            }
-            else
-            {
-                string text;
-                switch (cause)
-                {
-                    case CompDeathRecorder.DeathCause.Cut:
-                        text = ((gender == Gender.Male) ? GUDUtil.headCutGraphicPathMale : GUDUtil.headCutGraphicPathFemale);
-                        break;
-                    case CompDeathRecorder.DeathCause.Flame:
-                        text = GUDUtil.headBurnedGraphicPath;
-                        break;
-                    case CompDeathRecorder.DeathCause.Shred:
-                        text = ((gender == Gender.Male) ? GUDUtil.headShrededGraphicPathMale : GUDUtil.headShrededGraphicPathFemale);
-                        break;
-                    case CompDeathRecorder.DeathCause.Shot:
-                        text = ((gender == Gender.Male) ? GUDUtil.headShotPathMale : GUDUtil.headShotPathFemale);
-                        break;
-                    default:
-                        return null;
-                }
-                graphic = GraphicDatabase.Get<Graphic_Multi>(text, shader, Vector2.one, skinColor);
-            }
-            return graphic;
+            Shader shader =  ShaderDatabase.Cutout;
+            Graphic_Multi graphic_Multi = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(headType.graphicPath, shader, Vector2.one, color);
+            return graphic_Multi;
         }
 
-        public static Graphic GoredHeadGraphic(Pawn pawn, CompDeathRecorder.DeathCause cause, Shader shader)
+        public static Graphic FlyingHeadGraphic(Gender gender, Color skinColor, HeadTypeDef headTypeDef, Pawn pawn = null)
+        {
+            bool hasHead = pawn != null && pawn.Drawer.renderer.renderTree.HeadGraphic != null;
+            Graphic graphic;
+            try
+            {
+                if (hasHead)
+                {
+                    graphic = pawn.story.headType.GetGraphic(pawn, skinColor);
+                }
+                else
+                {
+                    graphic = GetDefaultHeadGraphic(headTypeDef, skinColor);
+                }
+            } catch (Exception e)
+            {
+                Log.Error($"GUD: Exception while generating flying head:{e}");
+                return null;
+            }
+       
+            return graphic;
+         }
+
+        public static Graphic GoredHeadGraphic(Pawn pawn, CompDeathRecorder.DeathCause cause, Shader shader, Color color)
         {
             bool flag = pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated;
             string text;
@@ -104,7 +102,8 @@ namespace GoreUponDismemberment
                 default:
                     return null;
             }
-            return GraphicDatabase.Get<Graphic_Multi>(text, shader, Vector2.one, pawn.story.SkinColor);
+
+            return GraphicDatabase.Get<Graphic_Multi>(text, shader, Vector2.one, color);
         }
     }
 }

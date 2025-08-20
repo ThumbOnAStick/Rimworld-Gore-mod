@@ -25,6 +25,7 @@ namespace GoreUponDismemberment
                 projectile_FlyingHead.skinColor = pawn.story.SkinColor;
                 projectile_FlyingHead.headMap = pawn.Map;
                 projectile_FlyingHead.pawn = pawn;
+                projectile_FlyingHead.SetHeadTypeDef(pawn.story.headType);
                 projectile_FlyingHead.Launch(pawn, localTargetInfo, localTargetInfo, ProjectileHitFlags.None, false, null);
             }
         }

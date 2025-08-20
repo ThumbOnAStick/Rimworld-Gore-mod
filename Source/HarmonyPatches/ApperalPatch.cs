@@ -1,4 +1,4 @@
-﻿using GoreUponDismemberment.ApperalTearingSystem;
+﻿using GoreUponDismemberment.SpriteSplitingSystem;
 using HarmonyLib;
 using RimWorld;
 using System;
@@ -25,9 +25,11 @@ namespace GoreUponDismemberment.HarmonyPatches
         public static void Postfix(Apparel apparel, BodyTypeDef bodyType, ref bool __result, ref ApparelGraphicRecord rec)
         {
             if (!__result) return;
-            if (apparel.def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso))
+            if (!apparel.WornByCorpse) return;
+            if (apparel.def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso) && DeathRecorderHelper.IsPawnTorsoDestroyed(apparel.Wearer))
             {
                 rec.graphic = new Graphic_SplitWrapper(rec.graphic, apparel);
+
             }
         }
     }

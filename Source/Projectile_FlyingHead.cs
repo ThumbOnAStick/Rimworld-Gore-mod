@@ -5,48 +5,75 @@ using Verse;
 
 namespace GoreUponDismemberment
 {
-    // Token: 0x0200000B RID: 11
     public class Projectile_FlyingHead : Projectile
     {
-        // Token: 0x06000026 RID: 38 RVA: 0x00002D70 File Offset: 0x00000F70
-        private bool HasBrainPartsForXenoType(Pawn pawn)
+        public Gender gender;
+        public Map headMap;
+        public Color skinColor;
+        public Pawn pawn;
+        int frame;
+        Rot4 facing;
+        private HeadTypeDef headtypeDef;
+
+        public Projectile_FlyingHead() : base()
         {
-            bool flag = pawn == null;
-            bool flag2;
-            if (flag)
-            {
-                flag2 = false;
-            }
-            else
-            {
-                bool flag3 = pawn.genes == null;
-                if (flag3)
-                {
-                    flag2 = false;
-                }
-                else
-                {
-                    bool flag4 = pawn.genes.Xenotype == null;
-                    if (flag4)
-                    {
-                        flag2 = false;
-                    }
-                    else
-                    {
-                        bool flag5 = !XenoGoreDictionary.dict.ContainsKey(pawn.genes.Xenotype);
-                        flag2 = !flag5;
-                    }
-                }
-            }
-            return flag2;
+            this.facing = new Rot4();
+            this.frame = 0;
+        }   
+
+        public Projectile_FlyingHead(Gender gender, Map headMap, Color skinColor, Pawn pawn, HeadTypeDef headtypeDef) : this()
+        {
+            this.gender = gender;
+            this.headMap = headMap;
+            this.skinColor = skinColor;
+            this.pawn = pawn;
+            this.headtypeDef = headtypeDef;
         }
 
-        // Token: 0x06000027 RID: 39 RVA: 0x00002DDC File Offset: 0x00000FDC
+        private float ArcHeightFactor
+        {
+            get
+            {
+                float num = def.projectile.arcHeightFactor;
+                float num2 = (destination - origin).MagnitudeHorizontalSquared();
+                if (num * num > num2 * 0.2f * 0.2f)
+                {
+                    num = Mathf.Sqrt(num2) * 0.2f;
+                }
+
+                return num;
+            }
+        }
+        private bool HasBrainPartsForXenoType(Pawn pawn)
+        {
+            if (pawn == null)
+            {
+                return false;
+            }
+
+            if (pawn.genes == null)
+            {
+                return false;
+            }
+
+            if (pawn.genes.Xenotype == null)
+            {
+                return false;
+            }
+
+            return XenoGoreDictionary.dict.ContainsKey(pawn.genes.Xenotype);
+        }
+
+        public void SetHeadTypeDef(HeadTypeDef path)
+        {
+            this.headtypeDef= path;
+        }
+
         protected override void Impact(Thing hitThing, bool blockedByShield = false)
         {
             base.Impact(hitThing, blockedByShield);
-            bool flag = this.pawn != null && this.HasBrainPartsForXenoType(this.pawn);
-            if (flag)
+
+            if (this.pawn != null && this.HasBrainPartsForXenoType(this.pawn))
             {
                 ThingDef brainPartsFilth = XenoGoreDictionary.dict[this.pawn.genes.Xenotype].brainPartsFilth;
                 FilthMaker.TryMakeFilth(base.Position, this.headMap, brainPartsFilth, "", 1, FilthSourceFlags.None);
@@ -57,7 +84,7 @@ namespace GoreUponDismemberment
             }
         }
 
-        // Token: 0x06000028 RID: 40 RVA: 0x00002E6C File Offset: 0x0000106C
+
         public override void ExposeData()
         {
             base.ExposeData();
@@ -65,45 +92,81 @@ namespace GoreUponDismemberment
             Scribe_References.Look<Pawn>(ref this.pawn, "pawn", false);
             Scribe_Values.Look<Gender>(ref this.gender, "gender", Gender.None, false);
             Scribe_Values.Look<Color>(ref this.skinColor, "skinColor", default(Color), false);
+            Scribe_Defs.Look<HeadTypeDef>(ref this.headtypeDef, "headType");
         }
 
-        // Token: 0x06000029 RID: 41 RVA: 0x00002ED4 File Offset: 0x000010D4
-        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
+        void DrawHead(Vector3 drawLoc)
         {
-            base.DrawAt(drawLoc, flip);
-            bool flag = this.pawn == null;
-            if (!flag)
+            Graphic headGraphic = this.Graphic;
+            if (headGraphic == null)
             {
+                return; // Don't draw anything if we don't have a valid graphic
+            }
+
+            float num = ArcHeightFactor * GenMath.InverseParabola(DistanceCoveredFractionArc);
+            // Head should be behind hair, so use a slightly lower z-position
+            Vector3 vector = drawLoc + new Vector3(0f, 0f, 1f) * num + new Vector3(0f, 0f, -0.01f);
+            Quaternion rotation = ExactRotation;
+            headGraphic.drawSize = this.DrawSize;
+            headGraphic.Draw(vector, facing, this, rotation.eulerAngles.y);
+        }
+
+        void DrawHair(Vector3 drawLoc)
+        {
+            if (this.pawn != null)
+            {
+                float num = ArcHeightFactor * GenMath.InverseParabola(DistanceCoveredFractionArc);
+                // Hair should be in front of head, so use the base z-position
+                Vector3 hairDrawLoc = drawLoc + new Vector3(0f, 0f, 1f) * num;
+                
                 Quaternion exactRotation = this.ExactRotation;
-                bool flag2 = this.pawn.story.hairDef != HairDefOf.Bald;
-                if (flag2)
+                
+                if (this.pawn.story.hairDef != HairDefOf.Bald)
                 {
-                    string text = this.pawn.story.hairDef.texPath + "_south";
-                    Graphic graphic = GraphicDatabase.Get<Graphic_Single>(text, ShaderDatabase.CutoutHair, Vector2.one, this.pawn.story.HairColor);
-                    graphic.Draw(drawLoc, base.Rotation, this, exactRotation.eulerAngles.y);
+                    string text = this.pawn.story.hairDef.texPath;
+                    Graphic graphic = GraphicDatabase.Get<Graphic_Multi>(text, ShaderDatabase.CutoutHair, Vector2.one, this.pawn.story.HairColor);
+                    graphic.drawSize = this.DrawSize;
+                    graphic.Draw(hairDrawLoc, facing, this, exactRotation.eulerAngles.y);
                 }
-                bool flag3 = this.pawn.style.beardDef != BeardDefOf.NoBeard;
-                if (flag3)
+                
+                if (this.pawn.style.beardDef != BeardDefOf.NoBeard)
                 {
-                    string text2 = this.pawn.style.beardDef.texPath + "_south";
-                    Graphic graphic2 = GraphicDatabase.Get<Graphic_Single>(text2, ShaderDatabase.CutoutHair, Vector2.one, this.pawn.story.HairColor);
-                    graphic2.Draw(drawLoc, base.Rotation, this, exactRotation.eulerAngles.y);
+                    string text2 = this.pawn.style.beardDef.texPath;
+                    Graphic graphic2 = GraphicDatabase.Get<Graphic_Multi>(text2, ShaderDatabase.CutoutHair, Vector2.one, this.pawn.story.HairColor);
+                    graphic2.drawSize = this.DrawSize;
+                    graphic2.Draw(hairDrawLoc, facing, this, exactRotation.eulerAngles.y);
                 }
             }
         }
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
+        {
+            this.frame++;
+            facing = Rot4.FromAngleFlat(360 * Mathf.Sin(frame / 10));
+            // Head
+            DrawHead(drawLoc);
 
-        // Token: 0x17000003 RID: 3
-        // (get) Token: 0x0600002A RID: 42 RVA: 0x00003005 File Offset: 0x00001205
+            // Hair
+            DrawHair(drawLoc);
+        }
+
+        public override Quaternion ExactRotation => base.ExactRotation * Quaternion.Euler(0, 90, 0);
+
         public override Graphic Graphic
         {
             get
             {
-                return GUDUtil.FlyingHeadGraphic(this.gender, this.skinColor, CompDeathRecorder.DeathCause.Shred, ShaderDatabase.CutoutSkin, this.pawn);
+                return GUDUtil.FlyingHeadGraphic(this.gender, this.skinColor, this.headtypeDef, this.pawn);
             }
         }
 
-        // Token: 0x17000004 RID: 4
-        // (get) Token: 0x0600002B RID: 43 RVA: 0x00003024 File Offset: 0x00001224
+        float GetSizeMultiplier()
+        {
+            float distanceFrom05 = Mathf.Abs(0.5f - this.DistanceCoveredFraction);
+            return Mathf.Max(1, 2f - (distanceFrom05 * 2f));
+        }
+
+        public override Vector2 DrawSize => pawn != null ? pawn.DrawSize * GetSizeMultiplier() : Vector2.one * GetSizeMultiplier();
+
         public override Material DrawMat
         {
             get
@@ -112,16 +175,6 @@ namespace GoreUponDismemberment
             }
         }
 
-        // Token: 0x0400001F RID: 31
-        public Gender gender;
 
-        // Token: 0x04000020 RID: 32
-        public Map headMap;
-
-        // Token: 0x04000021 RID: 33
-        public Color skinColor;
-
-        // Token: 0x04000022 RID: 34
-        public Pawn pawn;
     }
 }

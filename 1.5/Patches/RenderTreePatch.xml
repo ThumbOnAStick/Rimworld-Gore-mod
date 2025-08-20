@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+	<Operation Class="PatchOperationAdd">
+		<xpath>/Defs/PawnRenderTreeDef[defName="Humanlike"]/root/children/li[debugLabel="Body"]/children</xpath>
+		<value>
+			<li Class="PawnRenderNodeProperties_Overlay">
+				<debugLabel>Body gore</debugLabel>
+				<nodeClass>GoreUponDismemberment.PawnRenderNode_Gore</nodeClass>
+				<workerClass>GoreUponDismemberment.PawnRenderNodeWorker_Body_Gore</workerClass>
+				<colorType>Skin</colorType>
+				<useRottenColor>true</useRottenColor>
+				<baseLayer>31</baseLayer>
+				<rotDrawMode>Fresh, Rotting</rotDrawMode>
+			  </li>
+		</value>
+	</Operation>
+</Patch>

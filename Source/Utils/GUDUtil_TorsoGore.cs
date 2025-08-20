@@ -69,5 +69,46 @@ namespace GoreUponDismemberment
             SoundInfo soundInfo = SoundInfo.InMap(new TargetInfo(loc.ToIntVec3(), map, false), MaintenanceType.None);
             gibSound.PlayOneShot(soundInfo);
         }
+
+        internal static bool TorsoCheck(Hediff h)
+        {
+            BodyPartRecord part = h.Part;
+            var def = ((part != null) ? part.def : null);
+            return def == BodyPartDefOf.Torso || def == DefDatabase<BodyPartDef>.GetNamed("Body") ||
+                     def == DefDatabase<BodyPartDef>.GetNamed("MechanicalThorax");
+        }
+
+        public static bool IsTorsoDestroyed(Pawn pawn)
+        {
+            bool result = false;
+            List<Hediff> hediffs = pawn.health.hediffSet.hediffs;
+            if (hediffs != null && hediffs.Count >= 1 && hediffs.Any(TorsoCheck))
+            {
+                float severity = hediffs.Where(TorsoCheck).MaxBy((Hediff h) => h.tickAdded).Severity;
+                if (severity > (float)BodyPartDefOf.Torso.hitPoints)
+                {
+                    // Create visual effects
+                    GUDUtil.MakeGoreFleck(pawn);
+                    // Record torso to be fully destroyed
+                    pawn.health.hediffSet.pawn.TryGetComp<CompDeathRecorder>()?.SetTorsoDestroyed();
+                }
+            }
+            return result;
+        }
+
+        public static bool IsBodyPartDestroyed(BodyPartRecord part, Pawn pawn)
+        {
+            List<Hediff> hediffs = pawn.health.hediffSet.hediffs;
+            if (hediffs != null && hediffs.Count >= 1 && hediffs.Any(x => x.Part == part))
+            {
+                float severity = hediffs.Where(x => x.Part == part).MaxBy((Hediff h) => h.tickAdded).Severity;
+                if (severity > part.def.hitPoints)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

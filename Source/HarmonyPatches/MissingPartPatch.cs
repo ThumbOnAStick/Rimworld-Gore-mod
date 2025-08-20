@@ -40,12 +40,7 @@ namespace GoreUponDismemberment.HarmonyPatches
                     bool flag3 = IsHead(__instance);
                     if (flag3)
                     {
-                        Graphic graphic = GUDUtil.GoredHeadGraphic(__instance.pawn, CompDeathRecorder.DeathCause.Shred, ShaderDatabase.CutoutSkin);
-                        bool flag4 = graphic != null;
-                        if (flag4)
-                        {
                             GUDUtil.MakeFlyingHeadFor(__instance.pawn);
-                        }
                     }
                     else
                     {
