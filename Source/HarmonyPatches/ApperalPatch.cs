@@ -24,6 +24,7 @@ namespace GoreUponDismemberment.HarmonyPatches
      
         public static void Postfix(Apparel apparel, BodyTypeDef bodyType, ref bool __result, ref ApparelGraphicRecord rec)
         {
+            if (!GoreUponDismembermentMod.settings.enableTorsoSplit) return;
             if (!__result) return;
             if (!apparel.WornByCorpse) return;
             if (apparel.def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso) && DeathRecorderHelper.IsPawnTorsoDestroyed(apparel.Wearer))

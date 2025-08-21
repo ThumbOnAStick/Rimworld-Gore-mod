@@ -27,6 +27,7 @@ namespace GoreUponDismemberment
             listing_Standard.CheckboxLabeled("AllFilth".Translate(), ref settings.allFilth, "GoreSpawnsAsFilth".Translate(), 0f, 1f);
             if (settings.allFilth == false)
                 listing_Standard.CheckboxLabeled("IsForbidden".Translate(), ref settings.isForbidden, "ForbidGoreAfterSpawning".Translate(), 0f, 1f);
+            listing_Standard.CheckboxLabeled("EnableTorsoSplit".Translate(), ref settings.enableTorsoSplit);
             settings.limbDropChance=(int)listing_Standard.SliderLabeled("LimbDropChance".Translate(settings.limbDropChance),settings.limbDropChance,0,100);
             settings.torsoExplosionChance= (int)listing_Standard.SliderLabeled("TorsoExplosionChance".Translate(settings.torsoExplosionChance), settings.torsoExplosionChance, 0, 100);
             listing_Standard.End();

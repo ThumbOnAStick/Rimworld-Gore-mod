@@ -54,7 +54,7 @@ namespace GoreUponDismemberment.HarmonyPatches
 
                     //Check torso hp
                     BodyPartRecord torsoPart = pawn.health.hediffSet.GetNotMissingParts().FirstOrDefault(part => part.def == BodyPartDefOf.Torso);
-                    if (torsoPart != null && DeathRecorderHelper.IsPawnTorsoDestroyed(pawn)) // When pawn has death recorder
+                    if (torsoPart != null && DeathRecorderHelper.IsPawnTorsoDestroyed(pawn) && GoreUponDismembermentMod.settings.enableTorsoSplit) // When pawn has death recorder
                     {
                         __result = new Graphic_SplitWrapper(__result, pawn, false, true);
                         return;
@@ -69,6 +69,10 @@ namespace GoreUponDismemberment.HarmonyPatches
 
         public static void Postfix1(object[] __args, ref Graphic __result)
         {
+            if (!GoreUponDismembermentMod.settings.enableTorsoSplit)
+            {
+                return;
+            }
             if (__args[0] != null)
             {
                 Pawn pawn = __args[0] as Pawn;
