@@ -11,7 +11,6 @@ using Verse.Sound;
 
 namespace GoreUponDismemberment.HarmonyPatches
 {
-    [HarmonyPatch(typeof(Hediff_MissingPart), "PostAdd")]
     public class MissingPartPatch
     {
 

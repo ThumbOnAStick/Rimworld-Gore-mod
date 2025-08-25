@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
@@ -16,6 +17,7 @@ namespace GoreUponDismemberment.SpriteSplitingSystem
         private bool rendered;
         private bool isVertical;
         private bool drawLine;
+        private bool corrupted;
         private int seed;
         private int lineThickness;
 
@@ -31,17 +33,31 @@ namespace GoreUponDismemberment.SpriteSplitingSystem
             this.isVertical = isVertical;
             this.drawLine = drawLine;
             this.lineThickness = 5;
+            this.corrupted = false;
         }
 
         public override Material MatAt(Rot4 rot, Thing thing = null)
         {
-
-            if (!mats.TryGetValue(rot, out var mat) || !rendered)
+            try
             {
-                mats[rot] = mat = BuildTornMaterial(inner.MatAt(rot, thing));
-                SetRendered();
+                if (!mats.TryGetValue(rot, out Material mat) || !rendered)
+                {
+                    mats[rot] = mat = BuildSplitMaterial(inner.MatAt(rot, thing));
+                    SetRendered();
+                }
+                return mat;
             }
-            return mat;
+            catch (Exception e)
+            {
+                //if (!corrupted)
+                {
+                    string thingName = thing != null ? thing.ThingID : "None";
+                    this.corrupted = true;
+                    Log.Error($"GUD: failed to draw split torso mat for {thingName}, stacktrace: {e}");
+                }
+            }
+
+            return base.MatAt(rot, thing);
         }
 
         private void SetRendered()
@@ -49,7 +65,7 @@ namespace GoreUponDismemberment.SpriteSplitingSystem
             rendered = true;
         }
 
-        private Material BuildTornMaterial(Material baseMat)
+        private Material BuildSplitMaterial(Material baseMat)
         {
             var shader = baseMat.shader;
             var newMat = new Material(shader);
@@ -137,42 +153,6 @@ namespace GoreUponDismemberment.SpriteSplitingSystem
             UnityEngine.Random.state = old;
             return readableTex;
         }
-
-        void StampHoles(byte[] holeMask, int holes, int w, int h)
-        {
-            for (int i = 0; i < holes; i++)
-            {
-                int cx = UnityEngine.Random.Range(w / 6, w - w / 6);
-                int cy = UnityEngine.Random.Range(h / 3, h / 4);
-                float rx = UnityEngine.Random.Range(w * 0.04f, w * 0.12f);
-                float ry = rx * UnityEngine.Random.Range(0.7f, 1.3f);
-                float rot = UnityEngine.Random.Range(0f, Mathf.PI * 2f);
-
-                StampHole(holeMask, w, h, cx, cy, rx, ry, rot);
-            }
-        }
-
-        private void StampHole(byte[] mask, int w, int h, int cx, int cy, float rx, float ry, float rot)
-        {
-            float cos = Mathf.Cos(rot), sin = Mathf.Sin(rot);
-            int minx = Mathf.Max(0, Mathf.FloorToInt(cx - rx - 1));
-            int maxx = Mathf.Min(w - 1, Mathf.CeilToInt(cx + rx + 1));
-            int miny = Mathf.Max(0, Mathf.FloorToInt(cy - ry - 1));
-            int maxy = Mathf.Min(h - 1, Mathf.CeilToInt(cy + ry + 1));
-
-            for (int y = miny; y <= maxy; y++)
-                for (int x = minx; x <= maxx; x++)
-                {
-                    float dx = x - cx, dy = y - cy;
-                    // Rotate point into ellipse frame
-                    float ex = (dx * cos + dy * sin) / rx;
-                    float ey = (-dx * sin + dy * cos) / ry;
-                    if (ex * ex + ey * ey <= 1f) mask[y * w + x] = 1;
-
-                }
-        }
-
-
 
         private void SplitInTwo(byte[] mask, int w, int h, int hight)
         {
