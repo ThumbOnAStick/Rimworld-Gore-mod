@@ -8,6 +8,8 @@ namespace GoreUponDismemberment
         public bool allFilth;
         public bool isForbidden;
         public bool enableTorsoSplit;
+        public bool mute;
+        public bool enableHeadGraphics;
         public int limbDropChance;
         public int torsoExplosionChance;
 
@@ -17,6 +19,7 @@ namespace GoreUponDismemberment
             this.isForbidden = true;
             this.allFilth = false;
             this.enableTorsoSplit = true;
+            this.mute = true;
             this.limbDropChance = 100;
             this.torsoExplosionChance = 50;
         }
@@ -29,6 +32,8 @@ namespace GoreUponDismemberment
             Scribe_Values.Look<bool>(ref this.enableTorsoSplit, "enableTorsoSplit", true, false);
             Scribe_Values.Look<int>(ref this.limbDropChance, "limbDropChance", 100, false);
             Scribe_Values.Look<int>(ref this.torsoExplosionChance, "torsoExplosionChance", 50, false);
+            Scribe_Values.Look<bool>(ref this.mute, "mute", true);
+            Scribe_Values.Look<bool>(ref this.enableHeadGraphics, "enableHeadGraphics", true);
             base.ExposeData();
         }
 

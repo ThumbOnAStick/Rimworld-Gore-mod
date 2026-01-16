@@ -8,4 +8,6 @@
 	<LimbDropChance>断肢生成几率：{0}%</LimbDropChance>
 	<TorsoExplosionChance>躯干爆破几率：{0}%</TorsoExplosionChance>
 	<EnableTorsoSplit>启用躯干贴图切割</EnableTorsoSplit>
+	<Mute>静音</Mute>
+	<EnableHead>启用头部血腥贴图</EnableHead>
 </LanguageData>

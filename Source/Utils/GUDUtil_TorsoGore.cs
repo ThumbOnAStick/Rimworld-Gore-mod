@@ -65,6 +65,10 @@ namespace GoreUponDismemberment
 
         private static void PlayGibSound(Vector3 loc, Map map)
         {
+            if (GoreUponDismembermentMod.settings.mute)
+            {
+                return;
+            }
             SoundDef gibSound = GoreDefOf.GibSound;
             SoundInfo soundInfo = SoundInfo.InMap(new TargetInfo(loc.ToIntVec3(), map, false), MaintenanceType.None);
             gibSound.PlayOneShot(soundInfo);

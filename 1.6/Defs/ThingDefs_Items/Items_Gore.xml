@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-
 	<ThingDef ParentName="ResourceBase">
 		<defName>Gore</defName>
 		<label>Gore</label>
-		<!-- <thingClass>GoreUponDismemberment.DismemberedLimb</thingClass> -->
-		<description>Human body part,perfect battlefield meal for cannibals.</description>
+		<description>Human body part, perfect battlefield meal for cannibals.</description>
 		<thingCategories>
 			<li>Foods</li>
 		</thingCategories>
@@ -39,6 +37,9 @@
 				<daysToRotStart>1.5</daysToRotStart>
 				<rotDestroys>true</rotDestroys>
 			</li>
+			<li MayRequire="Ludeon.RimWorld.Anomaly">
+        		<compClass>CompHarbingerTreeConsumable</compClass>
+      		</li>
 		</comps>
 		<allowedArchonexusCount>200</allowedArchonexusCount>
 	</ThingDef>

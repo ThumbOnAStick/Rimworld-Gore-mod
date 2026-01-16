@@ -8,4 +8,6 @@
 	<LimbDropChance>Limb Drop Chance:{0}%</LimbDropChance>
 	<TorsoExplosionChance>Torso Explosion Chance:{0}%</TorsoExplosionChance>
 	<EnableTorsoSplit>Enable torso sprite split (When torso is destroyed)</EnableTorsoSplit>
+	<Mute>Mute</Mute>
+	<EnableHead>Enable head graphics</EnableHead>
 </LanguageData>

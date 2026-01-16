@@ -55,6 +55,10 @@ namespace GoreUponDismemberment.HarmonyPatches
                             {
                                 GUDUtil.MakeBrokenLimb(__instance.pawn);
                             }
+                            if (GoreUponDismembermentMod.settings.mute)
+                            {
+                                return;
+                            }
                             GoreDefOf.GoreSound.PlayOneShot(SoundInfo.InMap(new TargetInfo(__instance.pawn.PositionHeld, __instance.pawn.MapHeld, false), MaintenanceType.None));
                         }
                     }

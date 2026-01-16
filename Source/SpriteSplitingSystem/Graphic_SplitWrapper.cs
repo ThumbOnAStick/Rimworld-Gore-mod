@@ -18,8 +18,9 @@ namespace GoreUponDismemberment.SpriteSplitingSystem
         private bool isVertical;
         private bool drawLine;
         private bool corrupted;
-        private int seed;
-        private int lineThickness;
+        private bool isDessicated;
+        private readonly int seed;
+        private readonly int lineThickness;
 
         public Graphic_SplitWrapper(Graphic inner, Thing targetThing, bool isVertical = false, bool drawLine = false)
         {
@@ -36,11 +37,44 @@ namespace GoreUponDismemberment.SpriteSplitingSystem
             this.corrupted = false;
         }
 
+        bool IsThingDessicated(Thing thing)
+        {
+            Thing thingToCheck = this.targetThing ?? thing;
+            if(thingToCheck == null) return false;
+            
+            if (thingToCheck is Apparel apparel && apparel.Wearer != null)
+            {
+                var pawn = apparel.Wearer;
+                if (pawn.Corpse != null)
+                {
+                    var comp = pawn.Corpse.TryGetComp<CompRottable>();
+                    isDessicated = comp != null && comp.Stage == RotStage.Dessicated;
+                }
+                else
+                {
+                    isDessicated = pawn.Drawer?.renderer?.CurRotDrawMode == RotDrawMode.Dessicated;
+                }
+            }
+            else
+            {
+                if (!(thingToCheck is Pawn pawn) || pawn.Corpse == null)
+                {
+                    return false;
+                }
+                var comp = pawn.Corpse.TryGetComp<CompRottable>();
+                isDessicated = comp != null && comp.Stage == RotStage.Dessicated;
+            }
+            
+            if(isDessicated) Log.Message("Graphic_SplitWrapper: Target thing is dessicated.");
+            return isDessicated;
+        }
+
         public override Material MatAt(Rot4 rot, Thing thing = null)
         {
             try
             {
-                if (!mats.TryGetValue(rot, out Material mat) || !rendered)
+                bool newlyDessicated = !isDessicated && IsThingDessicated(thing);
+                if (!mats.TryGetValue(rot, out Material mat) || !rendered || newlyDessicated)
                 {
                     mats[rot] = mat = BuildSplitMaterial(inner.MatAt(rot, thing));
                     SetRendered();
@@ -49,12 +83,9 @@ namespace GoreUponDismemberment.SpriteSplitingSystem
             }
             catch (Exception e)
             {
-                //if (!corrupted)
-                {
                     string thingName = thing != null ? thing.ThingID : "None";
                     this.corrupted = true;
                     Log.Error($"GUD: failed to draw split torso mat for {thingName}, stacktrace: {e}");
-                }
             }
 
             return base.MatAt(rot, thing);
@@ -130,7 +161,6 @@ namespace GoreUponDismemberment.SpriteSplitingSystem
             int cy = UnityEngine.Random.Range(h / 3, h / 4);
             SplitInTwo(holeMask, w, h, cy);
 
-
             // Mark all pixels transparent
             for (int i = 0; i < pixels.Length; i++)
             {
@@ -139,7 +169,7 @@ namespace GoreUponDismemberment.SpriteSplitingSystem
                 {
                     pixels[i] = new Color32(p.r, p.g, p.b, 0);
                 }
-                else if (holeMask[i] == 2)
+                else if (holeMask[i] == 2 && !isDessicated)
                 {
                     if (pixels[i].a > 0)
                         pixels[i] = new Color32(150, 0, 0, 255);
@@ -163,8 +193,9 @@ namespace GoreUponDismemberment.SpriteSplitingSystem
                 {
                     bool exists = mask.Length > y * w + x;
                     if (!exists) break;
-                    bool validateHorizontal = !this.isVertical && y < hight;
-                    bool validateVertical = this.isVertical && x < w / 2;
+                    int randomizer = UnityEngine.Random.Range(-10, 10);
+                    bool validateHorizontal = !this.isVertical && y + randomizer < hight;
+                    bool validateVertical = this.isVertical && x + randomizer < w / 2;
                     bool validateHorizontalLine = validateHorizontal && hight - y <= this.lineThickness;
                     bool validateVerticalLine = validateVertical && w / 2 - x <= this.lineThickness;
                     if (validateHorizontalLine || validateVerticalLine) mask[y * w + x] = 2;// Mark red pixels 2

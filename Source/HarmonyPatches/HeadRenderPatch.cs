@@ -20,6 +20,11 @@ namespace GoreUponDismemberment.HarmonyPatches
 
         public static void Postfix(object[] __args, ref Graphic __result, PawnRenderNode_Head __instance)
         {
+            if (!GoreUponDismembermentMod.settings.enableHeadGraphics)
+            {
+                return;
+            }
+
             bool flag = __args[0] == null;
             if (!flag)
             {
